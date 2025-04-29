@@ -12,14 +12,23 @@ const auth = new google.auth.JWT(
 );
 const sheets = google.sheets({ version: 'v4', auth });
 const SHEET_ID = process.env.SHEET_ID;
-
+const TAB_NAME = 'Leads';   // or whatever tab name you intend to use
 async function appendLead(row) {
-  await sheets.spreadsheets.values.append({
-    spreadsheetId: SHEET_ID,
-    range: 'Leads!A1',
-    valueInputOption: 'RAW',
-    requestBody: { values: [row] }
-  });
+  try {
+    console.log('▶︎ attempting Sheets.append …');
+
+    const result = await sheets.spreadsheets.values.append({
+      spreadsheetId: SHEET_ID,
+      range: `${TAB_NAME}!A:D`,      // uses the TAB_NAME constant
+      valueInputOption: 'RAW',
+      requestBody: { values: [row] }
+    });
+
+    console.log('✅ append result status =', result.status);
+  } catch (err) {
+    console.error('🛑 GOOGLE-SHEETS ERROR →', err);
+    throw err;                       // bubble up so Vercel shows 500
+  }
 }
 
 export default async function handler(req, res) {
