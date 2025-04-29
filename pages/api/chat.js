@@ -12,14 +12,15 @@ const auth = new google.auth.JWT(
 );
 const sheets = google.sheets({ version: 'v4', auth });
 const SHEET_ID = process.env.SHEET_ID;
-const TAB_NAME = 'Leads';   // or whatever tab name you intend to use
+const TAB_NAME = 'Leads';
+console.log('▶︎ SHEET_ID =', SHEET_ID, 'TAB_NAME =', TAB_NAME);   // or whatever tab name you intend to use
 async function appendLead(row) {
   try {
     console.log('▶︎ attempting Sheets.append …');
 
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
-      range: `${TAB_NAME}!A:D`,      // uses the TAB_NAME constant
+     range: `${TAB_NAME}!A1`,      // uses the TAB_NAME constant
       valueInputOption: 'RAW',
       requestBody: { values: [row] }
     });
